@@ -1,23 +1,42 @@
 from fastapi import FastAPI, File
 from fastapi.responses import HTMLResponse
-
 from fastai.vision import *
 import torch
+
 from pathlib import Path
 from io import BytesIO
+import aiohttp, asyncio
+
+MODEL_URL = 'https://drive.google.com/u/0/uc?id=1-Cw70xsI7RBKIFWYvGkElUbW3RZUtacw&export=download'
+MODEL_FILENAME = 'model'
 
 app = FastAPI()
 
-path = Path("/app/app")
-learner = load_learner(path)
+path = Path(__file__).parent
 
+async def download_file(url, dest):
+    if dest.exists(): return
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            data = await response.read()
+            with open(dest, 'wb') as f: f.write(data)
+
+async def setup_learner():
+    await download_file(model_file_url, path/f'{model_file_name}.pth')
+    learner = load_learner(path)
+    return learn
+
+loop = asyncio.get_event_loop()
+tasks = [asyncio.ensure_future(setup_learner())]
+learn = loop.run_until_complete(asyncio.gather(*tasks))[0]
+loop.close()
 
 def predict_image_from_bytes(bytes):
     img = open_image(BytesIO(bytes))
-    _,_,losses = learner.predict(img)
+    _,_,losses = learn.predict(img)
     return {
         "predictions": sorted(
-            zip(learner.data.classes, map(float, losses)),
+            zip(learn.data.classes, map(float, losses)),
             key=lambda p: p[1],
             reverse=True
         )
