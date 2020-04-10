@@ -26,6 +26,11 @@ async def setup_learner():
     learner = load_learner(path)
     return learn
 
+async def get_bytes(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.read()
+
 loop = asyncio.get_event_loop()
 tasks = [asyncio.ensure_future(setup_learner())]
 learn = loop.run_until_complete(asyncio.gather(*tasks))[0]
@@ -64,25 +69,11 @@ async def show_form():
     </html>
     """
 
-@app.get("/html/", response_class=HTMLResponse)
-async def read_items():
-    return """
-    <html>
-        <head>
-            <title>Some HTML in here</title>
-        </head>
-        <body>
-            <h1>Look ma! HTML!</h1>
-        </body>
-    </html>
-    """
-
 @app.get("/classify-url")
-async def classify_url(request):
-    bytes = await get_bytes(request.query_params["url"])
+async def classify_url(url: str):
+    bytes = await get_bytes(url)
     return predict_image_from_bytes(bytes)
-
 
 @app.post("/upload")
 async def upload_file(file: bytes = File(...)):
-    return predict_image_from_bytes(file)
+    return predict_image_from_bytes(file)git
