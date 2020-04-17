@@ -25,3 +25,18 @@ visit 127.0.0.1
 
 ## Improvements
 More data, longer training. This was more a proof of concept to see how quickly I could get it up and into production. `flex` option in google app engine is not ideal for prototyping and expensive.
+
+## Deploying 
+The easy option is to deploy to google app engine, with the flex environment. The downside is that this is also the expensive option
+
+Google cloud run is much cheaper, you pay for what you use
+
+1. Set up project and Google Cloud cli
+2. Store and build image in Container Registry
+```
+gcloud builds submit --tag gcr.io/funsies-274500/cartoon
+```
+3. Deploy to Cloud Run
+```
+gcloud run deploy --image gcr.io/funsies-274500/cartoon --platform managed --memory 1Gi
+```
