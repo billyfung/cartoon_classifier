@@ -54,18 +54,93 @@ async def show_form():
     <html>
         <head>
             <title>Upload a cartoon</title>
+            <style>
+                body {
+                    margin: 10px;
+                }
+
+                .sidebar {
+                        grid-area: sidebar;
+                    }
+
+                    .content {
+                        grid-area: content;
+                    }
+
+                    .header {
+                        grid-area: header;
+                    }
+
+                    .footer {
+                        grid-area: footer;
+                    }
+
+                    .wrapper {
+                        display: grid;
+                        grid-gap: 10px;
+                        grid-template-columns: 120px 220px 120px;
+                        grid-template-areas:
+                        "....... header header"
+                        "sidebar content content"
+                        "footer  footer  footer";
+                        background-color: #fff;
+                        color: #444;
+                        margin: 10%;
+                    }
+
+                .box {
+                background-color: #f5f5dc;
+                color: #000;
+                border-radius: 5px;
+                padding: 20px;
+                font-size: 150%;
+                }
+
+                .header {
+                background-color: #999;
+                }
+
+                .sidebar {
+                background-color: #999;
+                font-size: 70%;
+                padding: 0;
+                font-style: italic;
+                }
+                
+                h1 {
+                font-size: 13px;
+                margin-left: 15px;
+                margin-top 20px;
+                }
+            </style>
         </head>
         <body>
-            <form action="/upload" method="post" enctype="multipart/form-data">
-                Select image to upload:
-                <input type="file" name="file">
-                <input type="submit" value="Upload Image">
-            </form>
-            Or submit a URL:
-            <form action="/classify-url" method="get">
-                <input type="url" name="url">
-                <input type="submit" value="Fetch and analyze image">
-            </form>
+          <div class="wrapper">
+            <div class="box header"> Which cartoon is it? </div>
+            <div class="box sidebar">
+            <h1>Current Options</h1>
+                <ul>
+                    <li>Simpsons</li>
+                    <li>DBZ</li>
+                    <li>Family Guy</li>
+                    <li>One Piece</li>
+                    <li>Peanuts</li>
+                </ul>
+            </div>
+            <div class="box content">
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    Upload:
+                    <input type="file" name="file">
+                    <input type="submit" value="Upload Image">
+                </form>
+                Or submit a URL:
+                <form action="/classify-url" method="get">
+                    <input type="url" name="url">
+                    <input type="submit" value="Fetch and analyze image">
+                </form>
+            </div>
+            <div class="box footer">Thank you come again</div>
+          </div>
         </body>
     </html>
     """
