@@ -12,7 +12,7 @@ click==7.1.1
 cycler==0.10.0
 cymem==2.0.3
 fastai==1.0.60
-fastapi==0.54.0
+fastapi==0.65.2
 fastprogress==0.2.3
 gunicorn==20.0.4
 h11==0.9.0
